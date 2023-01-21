@@ -58,18 +58,16 @@ def uploadMessage(request):
     serializer = MessageSerializer(message, many=False)
     return Response(serializer.data)
 
-@api_view(['PUT'])
+@api_view(['PATCH'])
 def deleteMessage(request,pk):
-
-    newMessage = {
-        'message': 'This message is deleted',
-        'deleted': True
-    }
+    data = request.data
 
     message = Message.objects.get(id=pk)
-    serializer = MessageSerializer(message, message=newMessage['message'], partial=True)
+    serializer = MessageSerializer(instance=message, data=data,partial = True)
 
     if(serializer.is_valid()):
         serializer.save()
+    else:
+        print('something went wrong')
 
     return Response('Message deleted')
